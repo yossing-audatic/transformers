@@ -1214,7 +1214,8 @@ class TFWav2Vec2MainLayer(tf.keras.layers.Layer):
         if inputs["attention_mask"] is not None:
             # compute real output lengths according to convolution formula
             output_lengths = self._get_feat_extract_output_lengths(tf.reduce_sum(inputs["attention_mask"], -1))
-            attention_mask = tf.sequence_mask(output_lengths, dtype=hidden_states.dtype)
+            max_output_length = self._get_feat_extract_output_lengths(inputs["input_values"].shape[-1])
+            attention_mask = tf.sequence_mask(output_lengths, maxlen=max_output_length, dtype=hidden_states.dtype)
 
         hidden_states = self.feature_projection(hidden_states, training=inputs["training"])
 
